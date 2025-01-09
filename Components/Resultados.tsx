@@ -1,4 +1,4 @@
-import { BotonPuntaje } from '../Components/BotonPuntaje';
+import { BotonPuntaje } from './BotonPuntaje';
 import { Text, View } from 'react-native';
 import { useStore } from 'store/store';
 
@@ -7,22 +7,23 @@ interface Props {
   id: string;
 }
 
-export const CartaPuntos = ({ id }: Props) => {
+export const Resultados = ({ id }: Props) => {
   const cantidadCartar = useStore((state) => state.cantCartas);
   const cambiarpuntaje = useStore((state) => state.cambiarPuntajeJugador);
   const cartasArray = Array.from({ length: cantidadCartar + 1 }, (_, index) => index);
 
+  // Cambiar puntaje al hacer clic en un número
   const manejarPuntaje = (numero: number) => {
     cambiarpuntaje(id, numero);
   };
 
   return (
     <View className="rounded-lg bg-white p-4 shadow-md">
-      <Text>Ronda 1/n</Text>
-      <Text>¿Cuántos puntos harás?</Text>
+      <Text className="text-lg font-semibold text-blue-700">Ronda 1/n</Text>
+      <Text className="mb-4 text-gray-700">¿Cuántos puntos hizo?</Text>
       <View className="flex-row flex-wrap items-center justify-center">
         {cartasArray.map((numero, index) => (
-          <BotonPuntaje key={index} manejarPuntaje={() => manejarPuntaje(numero)} numero={numero} /> // Arreglado el error de llaves
+          <BotonPuntaje key={index} manejarPuntaje={() => manejarPuntaje(numero)} numero={numero} />
         ))}
       </View>
     </View>
