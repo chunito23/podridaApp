@@ -1,5 +1,5 @@
-import { create } from 'zustand';
 import { nanoid } from 'nanoid';
+import { create } from 'zustand';
 
 interface Jugador {
   id: string;
@@ -14,6 +14,10 @@ interface Ronda {
 }
 
 const JugadoresDePrueba: Jugador[] = [
+  { id: 'v1StGXR8_Z5jdHi6B-myT', nombre: 'Thiago', prediccion: 0, puntos: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-abcd', nombre: 'Mique', prediccion: 0, puntos: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-efgh', nombre: 'Chuni', prediccion: 0, puntos: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-ijkl', nombre: 'Lucho', prediccion: 0, puntos: 0 },
   { id: 'v1StGXR8_Z5jdHi6B-myT', nombre: 'Thiago', prediccion: 0, puntos: 0 },
   { id: 'v1StGXR8_Z5jdHi6B-abcd', nombre: 'Mique', prediccion: 0, puntos: 0 },
   { id: 'v1StGXR8_Z5jdHi6B-efgh', nombre: 'Chuni', prediccion: 0, puntos: 0 },
@@ -33,7 +37,6 @@ interface Partida {
   cambiarPuntajeJugador: (id: string, puntos: number) => void;
   cambiarPrediccionJugador: (id: string, puntos: number) => void;
   aumentarCartas: () => void;
-  disminuirCartas: () => void;
   cambiarPuntosRestantes: (p: number) => void;
   avanzarRonda: () => void;
   RetrocederRonda: () => void;
@@ -55,7 +58,7 @@ export const useStore = create<Partida>((set) => ({
   puntosRestantes: INITIAL_PUNTOS_RESTANTES,
 
   calcularCantidadRondas: () =>
-    set((state) => ({ cantRondas: Math.floor(40 / state.jugadores.length) })),
+    set((state) => ({ cantRondas: 2 * Math.floor(40 / state.jugadores.length) - 2 })),
 
   agregarJugador: (nombre: string) =>
     set((state) => ({
@@ -81,9 +84,13 @@ export const useStore = create<Partida>((set) => ({
     })),
 
   aumentarCartas: () =>
-    set((state) => ({
-      cantCartas: state.cantCartas + 1,
-    })),
+    set((state) => {
+      if (state.numeroRondas < Math.floor(40 / state.jugadores.length)) {
+        return { cantCartas: state.cantCartas + 1 };
+      } else {
+        return { cantCartas: state.cantCartas - 1 };
+      }
+    }),
 
   cambiarRuta: () =>
     set((state) => ({

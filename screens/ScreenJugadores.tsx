@@ -11,6 +11,7 @@ export const ScreenJugadores = () => {
   const navigation = useNavigation();
   const EliminarJugadores = useStore((state) => state.eliminarJugador);
   const pasarRonda = useStore((state) => state.avanzarRonda);
+  const AumentarCantidadCartas = useStore((state) => state.aumentarCartas);
 
   const manejarEliminarJugador = (id: string) => {
     EliminarJugadores(id);
@@ -58,6 +59,8 @@ export const ScreenJugadores = () => {
           cambiarRuta();
           if (direccion == "ScreenPredicciones"){
             pasarRonda()
+            AumentarCantidadCartas()
+            
           }
         }}
         className="mt-6 w-full rounded-full bg-blue-600 p-4 shadow-lg hover:bg-blue-700">

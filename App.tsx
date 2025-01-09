@@ -10,10 +10,12 @@ import { Text, View } from 'react-native';
 export default function App() {
   const Rondas = useStore((state) => state.numeroRondas);
   const cantRondas = useStore((state) => state.cantRondas);
+  const CantidadCartas = useStore( (state) => state.cantCartas)
+
 
   return (
     <View className='flex-1'>
-      <Text>ronda numero: {Rondas}/{cantRondas} </Text>
+      <Text>ronda numero: {Rondas}/{cantRondas} cantidad de cartas {CantidadCartas} </Text>
       <RootStack />;
     </View>
   );
