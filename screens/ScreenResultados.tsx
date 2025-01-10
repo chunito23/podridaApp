@@ -7,7 +7,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 export const ScreenResultados = () => {
   const Jugadores = useStore((state) => state.jugadores);
-  const CantCartas = useStore((state) => state.cantCartas);
+  const actualizarJugadores = useStore((state) => state.actualizarPuntajes);
   const numeroRondas = useStore((state) => state.numeroRondas);
   const CantRondas = useStore((state) => state.cantRondas);
   const esValido = useStore((state) => state.PuntajeValida);
@@ -48,6 +48,7 @@ export const ScreenResultados = () => {
             <Pressable
               onPress={() => {
                 if (esValido) {
+                  actualizarJugadores()
                   const ruta = numeroRondas === CantRondas ? 'ScreenPerdedor' : 'ScreenJugadores';
                   navigation.navigate(ruta);
                 } else {

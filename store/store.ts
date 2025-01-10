@@ -29,7 +29,7 @@ interface Partida {
   agregarJugador: (nombre: string) => void;
   eliminarJugador: (id: string) => void;
   cambiarPuntajeJugador: (id: string, puntos: number) => void;
-  cambiarPuntajeTotalJugador: (id: string, puntos: number) => void;
+  actualizarPuntajes: () => void;
   cambiarPrediccionJugador: (id: string, puntos: number) => void;
   avanzarRonda: () => void;
   cambiarRuta: () => void;
@@ -74,12 +74,18 @@ export const useStore = create<Partida>((set, get) => ({
       jugadores: state.jugadores.filter((jugador) => jugador.id !== id),
     })),
 
-  cambiarPuntajeTotalJugador: (id: string, puntosTotales: number) =>
-    set((state) => ({
-      jugadores: state.jugadores.map((jugador) =>
-        jugador.id === id ? { ...jugador, puntosTotales } : jugador
-      ),
-    })),
+  actualizarPuntajes: () =>
+    set((state) => {
+      const jugadoresActualizados = state.jugadores.map((jugador) => {
+        const puntosTotales =
+          jugador.prediccion === jugador.puntos
+            ? jugador.puntosTotales + 10 + jugador.puntos
+            : jugador.puntosTotales + jugador.puntos;
+        return { ...jugador, puntosTotales };
+      });
+
+      return { jugadores: jugadoresActualizados };
+    }),
 
   cambiarPuntajeJugador: (id: string, puntos: number) =>
     set((state) => {

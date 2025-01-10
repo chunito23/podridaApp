@@ -34,7 +34,9 @@ export const ScreenJugadores = () => {
               <View>
                 <Text className="text-sm font-medium text-gray-500">Nombre:</Text>
                 <Text className="mb-2 text-lg text-gray-900">{Jugador.nombre}</Text>
-                <Text className="text-sm font-medium text-gray-500">Puntos:</Text>
+                <Text className="text-sm font-medium text-gray-500">total:</Text>
+                <Text className="text-lg font-semibold text-green-600">{Jugador.puntosTotales}</Text>
+                <Text className="text-sm font-medium text-gray-500">puntos:</Text>
                 <Text className="text-lg font-semibold text-green-600">{Jugador.puntos}</Text>
                 <Text className="text-sm font-medium text-gray-500">prediccion:</Text>
                 <Text className="text-lg font-semibold text-green-600">{Jugador.prediccion}</Text>

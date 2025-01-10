@@ -18,8 +18,9 @@ export const Resultados = ({ id,prediccion}: Jugador) => {
   const cartasArray = Array.from({ length: cantidadCartar + 1 }, (_, index) => index);
 
   // Cambiar puntaje al hacer clic en un número
-  const manejarPuntaje = (numero: number) => {
-      cambiarpuntaje(id, numero);
+  const manejarPuntaje = (numero: number) => { //actualizar puntajes despues de cargar todos
+    cambiarpuntaje(id, numero);
+    
   };
 
   return (
