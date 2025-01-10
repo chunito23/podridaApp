@@ -7,14 +7,19 @@ interface Props {
   id: string;
 }
 
-export const Resultados = ({ id }: Props) => {
+interface Jugador {
+  id: string;
+  prediccion: number;
+}
+
+export const Resultados = ({ id,prediccion}: Jugador) => {
   const cantidadCartar = useStore((state) => state.cantCartas);
   const cambiarpuntaje = useStore((state) => state.cambiarPuntajeJugador);
   const cartasArray = Array.from({ length: cantidadCartar + 1 }, (_, index) => index);
 
   // Cambiar puntaje al hacer clic en un número
   const manejarPuntaje = (numero: number) => {
-    cambiarpuntaje(id, numero);
+      cambiarpuntaje(id, numero);
   };
 
   return (

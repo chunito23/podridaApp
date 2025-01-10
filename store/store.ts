@@ -6,48 +6,43 @@ interface Jugador {
   nombre: string;
   prediccion: number;
   puntos: number;
-}
-
-interface Ronda {
-  cantCartas: number;
-  puntosRestantes: number;
+  puntosTotales: number;
 }
 
 const JugadoresDePrueba: Jugador[] = [
-  { id: 'v1StGXR8_Z5jdHi6B-myT', nombre: 'Thiago', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-abcd', nombre: 'Mique', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-efgh', nombre: 'Chuni', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-ijkl', nombre: 'Lucho', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-myT', nombre: 'Thiago', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-abcd', nombre: 'Mique', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-efgh', nombre: 'Chuni', prediccion: 0, puntos: 0 },
-  { id: 'v1StGXR8_Z5jdHi6B-ijkl', nombre: 'Lucho', prediccion: 0, puntos: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-myT', nombre: 'Thiago', prediccion: 0, puntos: 0, puntosTotales: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-abcd', nombre: 'Mique', prediccion: 0, puntos: 0, puntosTotales: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-efgh', nombre: 'Chuni', prediccion: 0, puntos: 0, puntosTotales: 0 },
+  { id: 'v1StGXR8_Z5jdHi6B-ijkl', nombre: 'Lucho', prediccion: 0, puntos: 0, puntosTotales: 0 },
 ];
 
 interface Partida {
+  PrediccionValida: boolean;
+  PuntajeValida: boolean;
   ruta: boolean;
   jugadores: Jugador[];
-  ronda: Ronda[];
   numeroRondas: number;
   cantRondas: number;
   cantCartas: number;
   puntosRestantes: number;
+  puntosronda: number;
   agregarJugador: (nombre: string) => void;
   eliminarJugador: (id: string) => void;
   cambiarPuntajeJugador: (id: string, puntos: number) => void;
+  cambiarPuntajeTotalJugador: (id: string, puntos: number) => void;
   cambiarPrediccionJugador: (id: string, puntos: number) => void;
-  aumentarCartas: () => void;
-  cambiarPuntosRestantes: (p: number) => void;
   avanzarRonda: () => void;
-  RetrocederRonda: () => void;
   cambiarRuta: () => void;
   calcularCantidadRondas: () => void;
+  mostrarEstado: () => void;
 }
 
 const INITIAL_CARTAS = 2;
 const INITIAL_PUNTOS_RESTANTES = 2;
 
-export const useStore = create<Partida>((set) => ({
+export const useStore = create<Partida>((set, get) => ({
+  PrediccionValida: true,
+  PuntajeValida: true,
   ruta: true,
   jugadores: JugadoresDePrueba,
   ronda: [],
@@ -56,13 +51,22 @@ export const useStore = create<Partida>((set) => ({
   prediccion: 0,
   cantCartas: INITIAL_CARTAS,
   puntosRestantes: INITIAL_PUNTOS_RESTANTES,
+  puntosronda: 0,
+
+  mostrarEstado: () => {
+    const estado = get(); // Obtén el estado actual del store
+    console.log('Estado actual del store:', estado);
+  },
 
   calcularCantidadRondas: () =>
     set((state) => ({ cantRondas: 2 * Math.floor(40 / state.jugadores.length) - 2 })),
 
   agregarJugador: (nombre: string) =>
     set((state) => ({
-      jugadores: [...state.jugadores, { id: nanoid(), nombre, prediccion: 0, puntos: 0 }],
+      jugadores: [
+        ...state.jugadores,
+        { id: nanoid(), nombre, prediccion: 0, puntos: 0, puntosTotales: 0 },
+      ],
     })),
 
   eliminarJugador: (id: string) =>
@@ -70,64 +74,69 @@ export const useStore = create<Partida>((set) => ({
       jugadores: state.jugadores.filter((jugador) => jugador.id !== id),
     })),
 
-  cambiarPuntajeJugador: (id: string, puntos: number) =>
+  cambiarPuntajeTotalJugador: (id: string, puntosTotales: number) =>
     set((state) => ({
       jugadores: state.jugadores.map((jugador) =>
-        jugador.id === id ? { ...jugador, puntos } : jugador
-      ),
-    })),
-  cambiarPrediccionJugador: (id: string, prediccion: number) =>
-    set((state) => ({
-      jugadores: state.jugadores.map((jugador) =>
-        jugador.id === id ? { ...jugador, prediccion } : jugador
+        jugador.id === id ? { ...jugador, puntosTotales } : jugador
       ),
     })),
 
-  aumentarCartas: () =>
+  cambiarPuntajeJugador: (id: string, puntos: number) =>
     set((state) => {
-      if (state.numeroRondas < Math.floor(40 / state.jugadores.length)) {
-        return { cantCartas: state.cantCartas + 1 };
-      } else {
-        return { cantCartas: state.cantCartas - 1 };
-      }
+      const jugadoresActualizados = state.jugadores.map((jugador) =>
+        jugador.id === id ? { ...jugador, puntos } : jugador
+      );
+
+      const sumaPuntos = jugadoresActualizados.reduce(
+        (acumulado, jugador) => acumulado + jugador.puntos,
+        0
+      );
+
+      const esValido = state.cantCartas === sumaPuntos;
+      const puntosSumaTotal = 0 + sumaPuntos;
+
+      return {
+        jugadores: jugadoresActualizados,
+        PuntajeValida: esValido,
+        puntosronda: puntosSumaTotal,
+      };
     }),
+
+  cambiarPrediccionJugador: (id: string, prediccion: number) =>
+    set((state) => {
+      // Actualizar las predicciones de los jugadores
+      const jugadoresActualizados = state.jugadores.map((jugador) =>
+        jugador.id === id ? { ...jugador, prediccion } : jugador
+      );
+
+      // Calcular la suma de las predicciones
+      const sumaPredicciones = jugadoresActualizados.reduce(
+        (acumulado, jugador) => acumulado + jugador.prediccion,
+        0
+      );
+
+      // Calcular los puntos restantes y determinar si la predicción es válida
+      const puntosRestantes = state.cantCartas - sumaPredicciones;
+      const prediccionValida = puntosRestantes !== 0;
+
+      return {
+        jugadores: jugadoresActualizados,
+        puntosRestantes,
+        PrediccionValida: prediccionValida,
+      };
+    }),
+
+  avanzarRonda: () =>
+    set((state) => ({
+      numeroRondas: state.numeroRondas + 1,
+      cantCartas:
+        state.numeroRondas < Math.floor(40 / state.jugadores.length) - 1
+          ? state.cantCartas + 1
+          : state.cantCartas - 1,
+    })),
 
   cambiarRuta: () =>
     set((state) => ({
       ruta: !state.ruta,
-    })),
-
-  disminuirCartas: () =>
-    set((state) => ({
-      cantCartas: Math.max(state.cantCartas - 1, 0),
-    })),
-
-  cambiarPuntosRestantes: (p: number) =>
-    set(() => ({
-      puntosRestantes: p,
-    })),
-
-  avanzarRonda: () =>
-    set((state) => ({
-      ronda: [
-        ...state.ronda,
-        {
-          cantCartas: state.cantCartas,
-          puntosRestantes: state.puntosRestantes,
-        },
-      ],
-      numeroRondas: state.numeroRondas + 1,
-    })),
-
-  RetrocederRonda: () =>
-    set((state) => ({
-      ronda: [
-        ...state.ronda,
-        {
-          cantCartas: state.cantCartas,
-          puntosRestantes: state.puntosRestantes,
-        },
-      ],
-      numeroRondas: state.numeroRondas - 1,
     })),
 }));

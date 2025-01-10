@@ -7,6 +7,7 @@ import { ScreenJugadores } from 'screens/ScreenJugadores';
 import { ScreenPredicciones } from 'screens/ScreenPredicciones';
 import { ScreenResultados } from 'screens/ScreenResultados';
 import { Menu } from 'screens/Menu';
+import { ScreenPerdedor } from 'screens/ScreenPerdedor';
 
 
 
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   ScreenJugadores: undefined;
   ScreenPredicciones: undefined;
   ScreenResultados: undefined;
+  ScreenPerdedor: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -30,6 +32,7 @@ export default function RootStack() {
         <Stack.Screen  name="ScreenJugadores" component={ScreenJugadores} />
         <Stack.Screen  name="ScreenPredicciones" component={ScreenPredicciones} />
         <Stack.Screen  name="ScreenResultados" component={ScreenResultados} />
+        <Stack.Screen  name="ScreenPerdedor" component={ScreenPerdedor} />
       </Stack.Navigator>
     </NavigationContainer>
   );

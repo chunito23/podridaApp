@@ -13,6 +13,8 @@ export const Predicciones = ({ id }: Props) => {
   const cantidadCartar = useStore((state) => state.cantCartas);
   const cambiarPrediccionJugador = useStore((state) => state.cambiarPrediccionJugador);
   const cartasArray = Array.from({ length: cantidadCartar + 1 }, (_, index) => index);
+  const puntosRestantes = useStore( (state) => state.puntosRestantes)
+  const cambiarPuntosRestates = useStore( (state) => state.cambiarPuntosRestantes)
 
   const manejarPrediccion = (numero: number) => {
     cambiarPrediccionJugador(id, numero);

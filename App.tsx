@@ -6,17 +6,13 @@ import 'react-native-gesture-handler';
 import RootStack from './navigation';
 import { useStore } from 'store/store';
 import { Text, View } from 'react-native';
+import { Indicador } from 'Components/Indicador';
 
 export default function App() {
-  const Rondas = useStore((state) => state.numeroRondas);
-  const cantRondas = useStore((state) => state.cantRondas);
-  const CantidadCartas = useStore( (state) => state.cantCartas)
-
-
   return (
     <View className='flex-1'>
-      <Text>ronda numero: {Rondas}/{cantRondas} cantidad de cartas {CantidadCartas} </Text>
-      <RootStack />;
+      <Indicador></Indicador>
+      <RootStack />
     </View>
   );
 }
